@@ -1,0 +1,448 @@
+/* TrueSight — Dark Theme Stylesheet */
+
+* {
+    font-family: "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+}
+
+QMainWindow, QWidget {
+    background-color: #0f1923;
+    color: #e8eaed;
+    font-size: 13px;
+}
+
+/* ── Header bar ───────────────────────────────────────────── */
+#headerBar {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #0d2137,
+        stop:1 #1a3a5c
+    );
+    border-bottom: 1px solid #1e3a55;
+}
+
+#appTitle {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+#appSubtitle {
+    font-size: 12px;
+    color: #7aa8cc;
+    letter-spacing: 0.5px;
+}
+
+/* ── Main content area ────────────────────────────────────── */
+#contentArea {
+    background-color: #121e2b;
+}
+
+/* ── Drop zone ────────────────────────────────────────────── */
+#dropZone {
+    background-color: #0d1e2e;
+    border: 2px dashed #1e4976;
+    border-radius: 12px;
+}
+
+#dropZone:hover {
+    border-color: #2e6da8;
+    background-color: #0f2338;
+}
+
+#dropZoneActive {
+    border-color: #3d8fd4;
+    background-color: #0f2338;
+}
+
+#dropIcon {
+    font-size: 36px;
+    color: #3d6e99;
+}
+
+#dropMainLabel {
+    font-size: 15px;
+    font-weight: 600;
+    color: #c8d8e8;
+}
+
+#dropSubLabel {
+    font-size: 11px;
+    color: #4d7a9a;
+}
+
+#browseBtn {
+    background-color: transparent;
+    color: #5ba3d4;
+    border: 1px solid #2a5a80;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 12px;
+}
+#browseBtn:hover {
+    background-color: #1a3a55;
+    color: #7dc0f0;
+}
+
+/* ── Preview area ─────────────────────────────────────────── */
+#previewFrame {
+    background-color: #0a1520;
+    border-radius: 10px;
+    border: 1px solid #1a3048;
+}
+
+#previewImage {
+    border-radius: 8px;
+}
+
+#previewFileName {
+    font-size: 13px;
+    font-weight: 600;
+    color: #c8d8e8;
+}
+
+#previewMeta {
+    font-size: 11px;
+    color: #4d7a9a;
+}
+
+#previewTypeTag {
+    font-size: 10px;
+    font-weight: 600;
+    color: #0f1923;
+    background-color: #3d8fd4;
+    border-radius: 4px;
+    padding: 2px 8px;
+    letter-spacing: 0.5px;
+}
+
+/* ── Right panel (settings) ───────────────────────────────── */
+#rightPanel {
+    background-color: #0f1923;
+}
+
+#settingsCard {
+    background-color: #0d1e2e;
+    border: 1px solid #1a3048;
+    border-radius: 10px;
+}
+
+#sectionLabel {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4d7a9a;
+    letter-spacing: 0.08em;
+}
+
+/* ── Sensitivity slider ───────────────────────────────────── */
+QSlider::groove:horizontal {
+    height: 4px;
+    background: #1a3048;
+    border-radius: 2px;
+}
+QSlider::handle:horizontal {
+    background: #3d8fd4;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin: -6px 0;
+}
+QSlider::sub-page:horizontal {
+    background: #3d8fd4;
+    border-radius: 2px;
+}
+
+#sliderLabelRow {
+    background: transparent;
+}
+
+#sliderLabelLow, #sliderLabelHigh {
+    font-size: 10px;
+    color: #4d7a9a;
+}
+
+#thresholdValueLabel {
+    font-size: 20px;
+    font-weight: 700;
+    color: #3d8fd4;
+    text-align: center;
+}
+
+#sensitivityHint {
+    font-size: 11px;
+    color: #4d7a9a;
+    line-height: 1.5;
+}
+
+#sensitivityNote {
+    font-size: 11px;
+    color: #5ba3d4;
+    background-color: #0a1a2a;
+    border: 1px solid #1a3a55;
+    border-radius: 6px;
+    padding: 8px 10px;
+    line-height: 1.5;
+}
+
+/* ── Start Analysis button ────────────────────────────────── */
+#startBtn {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #1a5c9e,
+        stop:1 #2272c3
+    );
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 0;
+    letter-spacing: 0.5px;
+}
+#startBtn:hover {
+    background: qlineargradient(
+        x1:0, y1:0, x2:1, y2:0,
+        stop:0 #1f6db8,
+        stop:1 #2a85e0
+    );
+}
+#startBtn:disabled {
+    background: #1a2a3a;
+    color: #3a5a7a;
+}
+
+#exportBtn {
+    background-color: transparent;
+    color: #5ba3d4;
+    border: 1px solid #2a5a80;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 0;
+}
+#exportBtn:hover { background-color: #0f2338; }
+#exportBtn:disabled { color: #2a4a6a; border-color: #1a3048; }
+
+/* ── Progress ─────────────────────────────────────────────── */
+#progressBar {
+    border: none;
+    border-radius: 3px;
+    background-color: #1a3048;
+    height: 5px;
+    text-align: center;
+    font-size: 11px;
+    color: #7aa8cc;
+}
+#progressBar::chunk {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #1a5c9e, stop:1 #3d8fd4);
+    border-radius: 3px;
+}
+#progressLabel { font-size: 11px; color: #4d7a9a; }
+
+/* ── Result cards ─────────────────────────────────────────── */
+#resultCard {
+    background-color: #0d1e2e;
+    border: 1px solid #1a3048;
+    border-radius: 8px;
+}
+
+#moduleNameLabel { font-size: 12px; font-weight: 600; color: #c8d8e8; }
+#moduleStatusLabel { font-size: 11px; color: #4d7a9a; }
+#moduleStatusError { font-size: 11px; color: #e05555; }
+
+#scoreLabelLow    { font-size: 16px; font-weight: 700; color: #2ecc71; }
+#scoreLabelMedium { font-size: 16px; font-weight: 700; color: #f39c12; }
+#scoreLabelHigh   { font-size: 16px; font-weight: 700; color: #e74c3c; }
+#scoreLabelNA     { font-size: 14px; color: #3a5a7a; }
+#scoreLabelError  { font-size: 14px; color: #e05555; }
+
+QProgressBar#barLow, QProgressBar#barMedium, QProgressBar#barHigh {
+    border: none;
+    border-radius: 2px;
+    background-color: #1a3048;
+}
+QProgressBar#barLow::chunk   { background-color: #2ecc71; border-radius: 2px; }
+QProgressBar#barMedium::chunk { background-color: #f39c12; border-radius: 2px; }
+QProgressBar#barHigh::chunk  { background-color: #e74c3c; border-radius: 2px; }
+
+/* Detail toggle */
+#detailToggleBtn {
+    background-color: transparent;
+    color: #3d8fd4;
+    border: 1px solid #1a3a55;
+    border-radius: 5px;
+    padding: 3px 8px;
+    font-size: 11px;
+}
+#detailToggleBtn:hover { background-color: #0f2338; }
+
+#detailSeparator { color: #1a3048; font-size: 10px; }
+#detailHeader {
+    font-size: 10px;
+    font-weight: 700;
+    color: #3a6a99;
+    letter-spacing: 0.05em;
+    padding-bottom: 2px;
+}
+#detailKey   { font-size: 11px; color: #4d7a9a; }
+#detailValue {
+    font-size: 11px;
+    color: #c8d8e8;
+    font-family: "Consolas", "Courier New", monospace;
+}
+#detailNote {
+    font-size: 11px;
+    color: #5ba3d4;
+    background-color: #0a1a2a;
+    border-radius: 5px;
+    padding: 6px 8px;
+    margin-top: 4px;
+}
+
+/* ── Verdict card ─────────────────────────────────────────── */
+#verdictCard {
+    background-color: #0d1e2e;
+    border: 1px solid #1a3048;
+    border-radius: 10px;
+}
+
+#panelLabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: #3a6a99;
+    letter-spacing: 0.08em;
+}
+
+#verdictScore, #verdictScoreLow, #verdictScoreMedium, #verdictScoreHigh {
+    font-size: 44px;
+    font-weight: 700;
+    color: #c8d8e8;
+}
+#verdictScoreLow    { color: #2ecc71; }
+#verdictScoreMedium { color: #f39c12; }
+#verdictScoreHigh   { color: #e74c3c; }
+
+#verdictText       { font-size: 15px; font-weight: 600; color: #c8d8e8; }
+#verdictConfidence { font-size: 12px; color: #4d7a9a; }
+
+#flaggedLabelActive {
+    font-size: 11px;
+    color: #e74c3c;
+    background-color: #1f0f0f;
+    border: 1px solid #5a1a1a;
+    border-radius: 6px;
+    padding: 6px;
+}
+#flaggedLabelOk {
+    font-size: 11px;
+    color: #2ecc71;
+    background-color: #0a1f12;
+    border: 1px solid #1a5a2a;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+/* Key findings */
+#findingCard {
+    background-color: #0a1520;
+    border: 1px solid #1a3048;
+    border-radius: 6px;
+}
+#findingSummaryHigh   { font-size: 11px; font-weight: 600; color: #e74c3c; line-height: 1.5; }
+#findingSummaryMedium { font-size: 11px; font-weight: 600; color: #f39c12; line-height: 1.5; }
+#findingSummaryLow    { font-size: 11px; font-weight: 600; color: #2ecc71; line-height: 1.5; }
+#findingText          { font-size: 11px; color: #7aa8cc; line-height: 1.5; }
+
+/* ── Back button ──────────────────────────────────────────── */
+#backBtn {
+    background-color: transparent;
+    color: #5ba3d4;
+    border: 1px solid #2a5a80;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+}
+#backBtn:hover { background-color: #0f2338; color: #7dc0f0; }
+
+/* ── History panel ────────────────────────────────────────── */
+#historyHeader { background: transparent; }
+
+#historySectionLabel {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4d7a9a;
+    letter-spacing: 0.08em;
+}
+
+#historyRefreshBtn {
+    background-color: transparent;
+    color: #3d8fd4;
+    border: 1px solid #1a3a55;
+    border-radius: 5px;
+    padding: 3px 8px;
+    font-size: 11px;
+}
+#historyRefreshBtn:hover { background-color: #0f2338; }
+
+#historyRow {
+    background-color: #0d1e2e;
+    border: 1px solid #1a3048;
+    border-radius: 7px;
+}
+#historyRow:hover {
+    background-color: #0f2440;
+    border-color: #2a5a80;
+}
+
+#historyFileName {
+    font-size: 12px;
+    font-weight: 600;
+    color: #c8d8e8;
+}
+
+#historyMeta {
+    font-size: 11px;
+    color: #4d7a9a;
+}
+
+#historyDate {
+    font-size: 11px;
+    color: #3a5a7a;
+}
+
+#historyScoreLow    { font-size: 13px; font-weight: 700; color: #2ecc71; }
+#historyScoreMedium { font-size: 13px; font-weight: 700; color: #f39c12; }
+#historyScoreHigh   { font-size: 13px; font-weight: 700; color: #e74c3c; }
+
+#historyEmpty {
+    font-size: 12px;
+    color: #3a5a7a;
+    padding: 20px;
+}
+
+/* ── Scroll bars ──────────────────────────────────────────── */
+QScrollArea { background: transparent; border: none; }
+QScrollBar:vertical {
+    width: 5px;
+    background: transparent;
+}
+QScrollBar::handle:vertical {
+    background: #1a3a55;
+    border-radius: 3px;
+    min-height: 30px;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+QScrollBar:horizontal { height: 0; }
+
+/* ── Splitter ─────────────────────────────────────────────── */
+QSplitter::handle { background-color: #1a3048; width: 1px; }
+
+/* Deepfake probability label above the score number */
+#verdictProbLabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: #3a6a99;
+    letter-spacing: 0.08em;
+}

@@ -1,0 +1,33 @@
+# Deepfake Detector - Dependencies
+# All packages are open-source with permissive licenses (Apache 2.0, BSD, MIT, LGPL)
+
+# UI Framework (LGPL)
+PySide6>=6.6.0
+
+# Computer Vision (Apache 2.0)
+opencv-python>=4.9.0
+mediapipe>=0.10.0
+
+# ML Inference (MIT / Apache 2.0)
+onnxruntime>=1.17.0          # CPU inference
+# onnxruntime-gpu>=1.17.0    # Uncomment for GPU support (CUDA required)
+numpy>=1.26.0
+Pillow>=10.2.0
+
+# Audio Processing (ISC)
+librosa>=0.10.0
+soundfile>=0.12.1
+
+# Video Processing (MIT)
+ffmpeg-python>=0.2.0
+
+# Report Export (BSD)
+reportlab>=4.1.0
+
+# Model Downloading (Apache 2.0)
+huggingface-hub>=0.21.0
+tqdm>=4.66.0
+
+# Utilities
+scipy>=1.12.0
+scikit-image>=0.22.0

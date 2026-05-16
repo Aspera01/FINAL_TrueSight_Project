@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Model weights (too large for git — use setup_models.py)
+models/*.onnx
+models/*.pt
+models/*.pth
+models/*.bin
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files from analysis
+/tmp/_deepfake_det_*.wav
+
+# Reports
+*.pdf
