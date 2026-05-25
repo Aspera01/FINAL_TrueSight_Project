@@ -23,7 +23,7 @@ from detectors.base import BaseDetector, DetectionResult, MediaType
 class LipSyncDetector(BaseDetector):
     name = "Lip-Sync Analysis"
     version = "1.0.0"
-    supported_types = [] #MediaType.VIDEO
+    supported_types = [MediaType.VIDEO] #MediaType.VIDEO
 
     # MediaPipe face mesh indices for upper/lower lip landmarks
     UPPER_LIP_IDX = [13, 312, 311, 310, 415, 308]

@@ -13,21 +13,21 @@ from detectors.base import DetectionResult, MediaType
 # Module weights per media type (must sum to 1.0 for active modules)
 WEIGHTS: dict[str, dict[str, float]] = {
     MediaType.IMAGE: {
-        "Error Level Analysis":         0.25,
-        "Frequency Analysis":            0.20,
-        "Face CNN (EfficientNet-B4)":   0.55,
+        "Error Level Analysis":              0.20,
+        "Frequency Analysis":                0.15,
+        "Face / Image Deepfake CNN":         0.65,
     },
     MediaType.VIDEO: {
-        "Frequency Analysis":            0.40, #10
-        #"Face CNN (EfficientNet-B4)":   0.40, 
-        "Temporal Consistency":          0.60, #25
-        #"Lip-Sync Analysis":             0.15, 
-        #"Audio Spectrogram (LCNN)":      0.05,
-        #"Noise Floor Consistency":       0.05,
+        "Frequency Analysis":                0.08,
+        "Face / Image Deepfake CNN":         0.42,
+        "Temporal Consistency":              0.25,
+        "Lip-Sync Analysis":                 0.15,
+        "Audio Deepfake Detector (Wav2Vec2)": 0.05,
+        "Noise Floor Consistency":           0.05,
     },
     MediaType.AUDIO: {
-        "Audio Spectrogram (LCNN)":      0.65,
-        "Noise Floor Consistency":       0.35,
+        "Audio Deepfake Detector (Wav2Vec2)": 0.70,
+        "Noise Floor Consistency":            0.30,
     },
 }
 
@@ -49,14 +49,14 @@ FINDING_TEMPLATES: dict[str, dict[str, str]] = {
         "low":    "Frequency domain analysis found a natural spectral distribution "
                   "with no significant synthetic artifacts.",
     },
-    "Face CNN (EfficientNet-B4)": {
-        "high":   "The facial deepfake classifier flagged high-confidence manipulation "
-                  "indicators in the detected face region, including blending artifacts "
-                  "and texture inconsistencies around facial boundaries.",
-        "medium": "The facial deepfake classifier detected moderate anomalies in the "
-                  "face region that are partially consistent with deepfake generation.",
-        "low":    "The facial deepfake classifier found no significant manipulation "
-                  "artifacts in the detected face region.",
+    "Face / Image Deepfake CNN": {
+        "high":   "The ViT deepfake classifier flagged high-confidence manipulation "
+                  "indicators, including texture inconsistencies and unnatural facial "
+                  "boundaries consistent with AI-generated imagery.",
+        "medium": "The ViT deepfake classifier detected moderate anomalies partially "
+                  "consistent with deepfake generation.",
+        "low":    "The ViT deepfake classifier found no significant manipulation "
+                  "artifacts in the analysed image or face region.",
     },
     "Temporal Consistency": {
         "high":   "Frame-to-frame analysis detected significant flickering and irregular "
@@ -76,13 +76,13 @@ FINDING_TEMPLATES: dict[str, dict[str, str]] = {
         "low":    "Lip-sync analysis found the mouth movements and audio track to be "
                   "well-synchronized, consistent with authentic recording.",
     },
-    "Audio Spectrogram (LCNN)": {
-        "high":   "The audio deepfake classifier identified strong synthetic speech "
-                  "indicators in the mel-spectrogram, including unnatural pitch contours "
-                  "and over-smooth formant transitions typical of voice cloning systems.",
-        "medium": "The audio classifier detected moderate spectral anomalies that are "
-                  "partially consistent with AI-synthesized or cloned speech.",
-        "low":    "The audio classifier found natural spectral characteristics consistent "
+    "Audio Deepfake Detector (Wav2Vec2)": {
+        "high":   "The Wav2Vec2 audio classifier identified strong synthetic speech "
+                  "indicators, including unnatural pitch contours and spectral patterns "
+                  "typical of AI voice cloning systems.",
+        "medium": "The audio classifier detected moderate anomalies partially consistent "
+                  "with AI-synthesised or cloned speech.",
+        "low":    "The audio classifier found natural speech characteristics consistent "
                   "with authentic human speech.",
     },
     "Noise Floor Consistency": {

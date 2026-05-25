@@ -232,7 +232,7 @@ class MainWindow(QMainWindow):
 
         # Verdict widget (always visible)
         self.verdict_widget = VerdictWidget()
-        layout.addWidget(self.verdict_widget)
+        layout.addWidget(self.verdict_widget, 1) #remove 1 if doesnt work
 
         # Settings card — hidden while results are shown
         self._settings_card = QFrame()

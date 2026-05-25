@@ -62,7 +62,8 @@ class VerdictWidget(QFrame):
         self.findings_scroll.setFrameShape(QFrame.NoFrame)
         self.findings_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.findings_scroll.setVisible(False)
-        self.findings_scroll.setMaximumHeight(300)
+        self.findings_scroll.setMaximumHeight(500) #300
+        self.findings_scroll.setMinimumHeight(200) #remove it dont work
 
         self.findings_container = QWidget()
         self.findings_layout = QVBoxLayout(self.findings_container)

@@ -83,19 +83,37 @@ class Database:
             self._seed_modules(conn)
 
     def _seed_modules(self, conn: sqlite3.Connection):
-        """Insert the known detection modules if not already present."""
+        """Insert or update known detection modules."""
         modules = [
-            ("Error Level Analysis",       "Detects pixel-level tampering via JPEG re-compression comparison",        "Signal Processing"),
-            ("Frequency Analysis",         "Detects GAN artifacts in DCT/FFT frequency domain",                       "Signal Processing"),
-            ("Face CNN (EfficientNet-B4)", "Deep CNN face deepfake classifier trained on FaceForensics++",             "Pre-trained CNN"),
-            ("Temporal Consistency",       "Detects frame-to-frame inconsistencies via optical flow analysis",        "Computer Vision"),
-            ("Lip-Sync Analysis",          "Detects audio-visual desynchronization using facial landmark tracking",   "Multi-modal Analysis"),
-            ("Audio Spectrogram (LCNN)",   "Mel-spectrogram CNN classifier for synthetic speech detection",           "Pre-trained CNN"),
-            ("Noise Floor Consistency",    "Detects audio splicing via background noise profile analysis",            "Signal Processing"),
+            ("Error Level Analysis",
+             "Detects pixel-level tampering via JPEG re-compression comparison",
+             "Signal Processing"),
+            ("Frequency Analysis",
+             "Detects GAN artifacts in DCT/FFT frequency domain",
+             "Signal Processing"),
+            ("Face / Image Deepfake CNN",
+             "ViT deepfake classifier (Deep-Fake-Detector-v2, 92% accuracy)",
+             "Pre-trained CNN"),
+            ("Temporal Consistency",
+             "Detects frame-to-frame inconsistencies via optical flow analysis",
+             "Computer Vision"),
+            ("Lip-Sync Analysis",
+             "Detects audio-visual desynchronization using facial landmark tracking",
+             "Multi-modal Analysis"),
+            ("Audio Deepfake Detector (Wav2Vec2)",
+             "Wav2Vec2 audio deepfake classifier (99.7% accuracy)",
+             "Pre-trained CNN"),
+            ("Noise Floor Consistency",
+             "Detects audio splicing via background noise profile analysis",
+             "Signal Processing"),
         ]
         for name, desc, algo_type in modules:
             conn.execute(
-                "INSERT OR IGNORE INTO Detection_Module (Module_Name, Description, Algorithm_Type) VALUES (?, ?, ?)",
+                """INSERT INTO Detection_Module (Module_Name, Description, Algorithm_Type)
+                   VALUES (?, ?, ?)
+                   ON CONFLICT(Module_Name) DO UPDATE SET
+                       Description    = excluded.Description,
+                       Algorithm_Type = excluded.Algorithm_Type""",
                 (name, desc, algo_type)
             )
 
@@ -125,8 +143,16 @@ class Database:
             # Insert one Analysis_Result per module
             for result in aggregated.module_results:
                 module_id = module_map.get(result.module_name)
+
+                # Auto-register module if not in DB yet (handles future new modules)
                 if module_id is None:
-                    continue
+                    cursor = conn.execute(
+                        """INSERT INTO Detection_Module (Module_Name, Description, Algorithm_Type)
+                           VALUES (?, ?, ?)""",
+                        (result.module_name, "Auto-registered module", "Unknown")
+                    )
+                    module_id = cursor.lastrowid
+                    module_map[result.module_name] = module_id
 
                 discrepancy = result.label if result.supported and not result.error else (result.error or "N/A")
                 details_json = json.dumps(result.details) if result.details else None

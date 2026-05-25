@@ -61,11 +61,17 @@ class ELADetector(BaseDetector):
         #   the CV term — far too aggressive. New thresholds:
         #     mean_error > 40  → clearly anomalous  (old threshold was 25)
         #     CV > 4.0         → spatially uneven    (old threshold was 3.0)
-        mean_score = min(1.0, max(0.0, (mean_error - 20.0) / 35.0))   # 0 at ≤10, 1 at ≥45
+        #mean_score = min(1.0, max(0.0, (mean_error - 20.0) / 35.0))   # 0 at ≤10, 1 at ≥45
         cv_score   = min(1.0, max(0.0, (cv - 2.5) / 3.0))             # 0 at ≤1.5, 1 at ≥4.5
-        score = mean_score * 0.45 + cv_score * 0.55
+        #score = 0.50#mean_score * 0.45 + cv_score * 0.55
         # Confidence scales with how extreme the evidence is
-        confidence = min(0.85, 0.40 + (max_error / 255.0) * 0.45)
+        #confidence = min(0.85, 0.40 + (max_error / 255.0) * 0.45)
+        score = min(1.0, (mean_error / 25.0) * 0.5 + min(cv / 3.0, 0.5))
+        confidence = min(1.0, 0.5 + (max_error / 255.0) * 0.5)
+        
+        
+        
+
 
         return DetectionResult(
             module_name=self.name,
