@@ -1,7 +1,7 @@
 """
 History Panel
 --------------
-Shows previous analysis sessions stored in the local SQLite database.
+Shows previous analysis sessions stored in the local JSON history file.
 Each row is clickable and emits `history_item_selected(report_id)` so the
 main window can navigate back into a stored result.
 """

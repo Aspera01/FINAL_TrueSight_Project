@@ -1,14 +1,20 @@
 """
-Drop zone widget — simple file selection, no media preview.
-Shows upload prompt when empty, filename + type when a file is loaded.
+Drop zone widget — file selection with media preview.
+Shows upload prompt when empty; thumbnail/frame/waveform when a file is loaded.
+
+Architecture note: the outer QVBoxLayout on DropZoneWidget is created ONCE and
+never replaced. State changes swap the inner content QWidget instead, which avoids
+Qt's silent refusal to replace a layout via QVBoxLayout(parent) while the old
+layout is still pending deletion.
 """
 
 from pathlib import Path
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFileDialog,
+    QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog,
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QDragEnterEvent, QDropEvent
+from ui.components.media_preview import MediaPreviewWidget
 
 SUPPORTED = (
     "Media Files (*.jpg *.jpeg *.png *.bmp *.tiff *.webp "
@@ -26,13 +32,29 @@ class DropZoneWidget(QWidget):
         self.setAcceptDrops(True)
         self.setObjectName("dropZone")
         self.setMinimumHeight(180)
-        self._build_empty()
 
-    # ── states ───────────────────────────────────────
+        self._outer = QVBoxLayout(self)
+        self._outer.setContentsMargins(0, 0, 0, 0)
+        self._outer.setSpacing(0)
 
-    def _build_empty(self):
-        self._clear()
-        layout = QVBoxLayout(self)
+        self._content: QWidget | None = None
+        self._swap(self._empty_widget())
+
+    # ── content swap ─────────────────────────────────
+
+    def _swap(self, new: QWidget):
+        """Replace the inner content widget without touching the outer layout."""
+        if self._content is not None:
+            self._outer.removeWidget(self._content)
+            self._content.deleteLater()
+        self._content = new
+        self._outer.addWidget(new)
+
+    # ── empty state ──────────────────────────────────
+
+    def _empty_widget(self) -> QWidget:
+        w = QWidget()
+        layout = QVBoxLayout(w)
         layout.setAlignment(Qt.AlignCenter)
         layout.setSpacing(10)
         layout.setContentsMargins(20, 28, 20, 28)
@@ -58,49 +80,49 @@ class DropZoneWidget(QWidget):
         browse_btn.clicked.connect(self._browse)
         layout.addWidget(browse_btn, alignment=Qt.AlignCenter)
 
-    def _build_loaded(self, path: str):
-        self._clear()
-        layout = QVBoxLayout(self)
-        layout.setAlignment(Qt.AlignCenter)
-        layout.setSpacing(10)
-        layout.setContentsMargins(20, 28, 20, 28)
+        return w
 
-        # Checkmark icon
-        icon = QLabel("✔")
-        icon.setObjectName("dropIconLoaded")
-        icon.setAlignment(Qt.AlignCenter)
-        layout.addWidget(icon)
+    # ── loaded state ─────────────────────────────────
 
-        # File name
+    def _loaded_widget(self, path: str) -> QWidget:
+        w = QWidget()
+        layout = QVBoxLayout(w)
+        layout.setAlignment(Qt.AlignTop)
+        layout.setSpacing(6)
+        layout.setContentsMargins(12, 10, 12, 10)
+
+        preview = MediaPreviewWidget(path, height=130)
+        layout.addWidget(preview)
+
         name_lbl = QLabel(Path(path).name)
-        name_lbl.setObjectName("dropFileLoaded")
+        name_lbl.setObjectName("previewFileName")
         name_lbl.setAlignment(Qt.AlignCenter)
         name_lbl.setWordWrap(True)
         layout.addWidget(name_lbl)
 
-        # File type + size
         ext = Path(path).suffix.upper().lstrip(".")
         size = Path(path).stat().st_size
         size_str = f"{size/1024/1024:.1f} MB" if size > 1024*1024 else f"{size/1024:.1f} KB"
         meta_lbl = QLabel(f"{ext}  ·  {size_str}  ·  Ready for analysis")
-        meta_lbl.setObjectName("dropSubLabel")
+        meta_lbl.setObjectName("previewMeta")
         meta_lbl.setAlignment(Qt.AlignCenter)
         layout.addWidget(meta_lbl)
 
-        # Change file button
         change_btn = QPushButton("Change file")
         change_btn.setObjectName("browseBtn")
         change_btn.setFixedWidth(130)
         change_btn.clicked.connect(self._browse)
         layout.addWidget(change_btn, alignment=Qt.AlignCenter)
 
+        return w
+
     # ── public API ───────────────────────────────────
 
     def set_file(self, path: str):
-        self._build_loaded(path)
+        self._swap(self._loaded_widget(path))
 
     def reset(self):
-        self._build_empty()
+        self._swap(self._empty_widget())
 
     # ── internals ────────────────────────────────────
 
@@ -110,15 +132,6 @@ class DropZoneWidget(QWidget):
         )
         if path:
             self.file_selected.emit(path)
-
-    def _clear(self):
-        old = self.layout()
-        if old:
-            while old.count():
-                item = old.takeAt(0)
-                if item.widget():
-                    item.widget().deleteLater()
-            old.deleteLater()
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():

@@ -153,7 +153,7 @@ class MainWindow(QMainWindow):
         self.drop_zone = DropZoneWidget()
         self.drop_zone.file_selected.connect(self._on_file_selected)
         self.drop_zone.setMinimumHeight(200)
-        self.drop_zone.setMaximumHeight(260)
+        self.drop_zone.setMaximumHeight(320)
         layout.addWidget(self.drop_zone)
 
         # Progress bar (visible during analysis, lives in home view)
