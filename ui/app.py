@@ -32,6 +32,7 @@ from ui.components.result_panel import ResultPanel
 from ui.components.drop_zone import DropZoneWidget
 from ui.components.verdict_widget import VerdictWidget
 from ui.components.history_panel import HistoryPanel
+from ui.components.analysis_preview import AnalysisPreviewWidget
 from utils.database import Database
 
 
@@ -72,6 +73,7 @@ class MainWindow(QMainWindow):
         self._threshold: float = 0.5
         self._last_result: AggregatedResult | None = None
         self._db = Database()
+        self._analysis_preview: AnalysisPreviewWidget | None = None
 
         self._build_ui()
         self.setAcceptDrops(True)
@@ -137,6 +139,7 @@ class MainWindow(QMainWindow):
         self._left_stack = QStackedWidget()
         self._left_stack.addWidget(self._build_home_view())     # index 0
         self._left_stack.addWidget(self._build_results_view())  # index 1
+        self._left_stack.addWidget(self._build_analysis_view()) # index 2
         layout.addWidget(self._left_stack)
 
         return panel
@@ -156,19 +159,6 @@ class MainWindow(QMainWindow):
         self.drop_zone.setMaximumHeight(320)
         layout.addWidget(self.drop_zone)
 
-        # Progress bar (visible during analysis, lives in home view)
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setObjectName("progressBar")
-        self.progress_bar.setVisible(False)
-        self.progress_bar.setTextVisible(False)
-        self.progress_bar.setFixedHeight(5)
-        layout.addWidget(self.progress_bar)
-
-        self.progress_label = QLabel("")
-        self.progress_label.setObjectName("progressLabel")
-        self.progress_label.setVisible(False)
-        layout.addWidget(self.progress_label)
-
         # History section header
         hist_header = QLabel("")
         hist_header.setObjectName("sectionLabel")
@@ -178,6 +168,37 @@ class MainWindow(QMainWindow):
         self.history_panel = HistoryPanel(self._db)
         self.history_panel.history_item_selected.connect(self._on_history_selected)
         layout.addWidget(self.history_panel, 1)
+
+        return view
+
+    # ── Analysis view (animated preview + progress) ─────────
+
+    def _build_analysis_view(self) -> QWidget:
+        view = QWidget()
+        layout = QVBoxLayout(view)
+        layout.setContentsMargins(0, 8, 0, 0)
+        layout.setSpacing(8)
+
+        self._analysis_file_label = QLabel("")
+        self._analysis_file_label.setObjectName("analysisFileLabel")
+        self._analysis_file_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._analysis_file_label)
+
+        # AnalysisPreviewWidget is swapped in here each run
+        self._analysis_holder = QWidget()
+        self._analysis_holder_layout = QVBoxLayout(self._analysis_holder)
+        self._analysis_holder_layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self._analysis_holder, 1)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setObjectName("progressBar")
+        self.progress_bar.setTextVisible(False)
+        self.progress_bar.setFixedHeight(5)
+        layout.addWidget(self.progress_bar)
+
+        self.progress_label = QLabel("")
+        self.progress_label.setObjectName("progressLabel")
+        layout.addWidget(self.progress_label)
 
         return view
 
@@ -342,12 +363,14 @@ class MainWindow(QMainWindow):
         self.start_btn.setEnabled(False)
         self.export_btn.setEnabled(False)
         self.progress_bar.setValue(0)
-        self.progress_bar.setVisible(True)
-        self.progress_label.setVisible(True)
         self.progress_label.setText("Preparing analysis…")
-        # Stay on home view so progress is visible during analysis
-        self._left_stack.setCurrentIndex(0)
-        self._settings_card.setVisible(True)
+
+        self._analysis_file_label.setText(
+            f"ANALYZING  ·  {Path(self._current_file).name}"
+        )
+        self._start_analysis_preview(self._current_file)
+        self._left_stack.setCurrentIndex(2)
+        self._settings_card.setVisible(False)
 
         self._worker = AnalysisWorker(self._current_file)
         self._worker.progress.connect(self._on_progress)
@@ -361,8 +384,7 @@ class MainWindow(QMainWindow):
         self.progress_label.setText(f"Running: {module_name}  ({current}/{total})")
 
     def _on_analysis_done(self, media_type, results):
-        self.progress_bar.setVisible(False)
-        self.progress_label.setVisible(False)
+        self._stop_analysis_preview()
         self.start_btn.setEnabled(True)
 
         aggregated = aggregate(results, media_type, self._threshold)
@@ -391,9 +413,10 @@ class MainWindow(QMainWindow):
             self.results_layout.insertWidget(self.results_layout.count() - 1, card)
 
     def _on_analysis_error(self, error_msg: str):
-        self.progress_bar.setVisible(False)
-        self.progress_label.setVisible(False)
+        self._stop_analysis_preview()
         self.start_btn.setEnabled(True)
+        self._left_stack.setCurrentIndex(0)
+        self._settings_card.setVisible(True)
         QMessageBox.critical(
             self, "Analysis Error",
             f"An error occurred during analysis:\n\n{error_msg}"
@@ -475,6 +498,20 @@ class MainWindow(QMainWindow):
                 QMessageBox.critical(self, "Export Failed", str(e))
 
     # ─────────────────────────────────────────── HELPERS ──
+
+    def _start_analysis_preview(self, path: str):
+        self._stop_analysis_preview()
+        widget = AnalysisPreviewWidget(path)
+        self._analysis_holder_layout.addWidget(widget)
+        self._analysis_preview = widget
+        widget.start()
+
+    def _stop_analysis_preview(self):
+        if self._analysis_preview is not None:
+            self._analysis_preview.stop()
+            self._analysis_holder_layout.removeWidget(self._analysis_preview)
+            self._analysis_preview.deleteLater()
+            self._analysis_preview = None
 
     def _clear_result_cards(self):
         """Remove all module cards, keeping only the trailing stretch."""

@@ -239,5 +239,150 @@
         "Details_JSON": "{\"segments_analysed\": 119, \"noise_floor_cv\": 0.8472, \"noise_spike_ratio\": 0.1102, \"centroid_cv\": 0.2449, \"mean_noise_floor\": 0.102506}"
       }
     ]
+  },
+  {
+    "Report_ID": 7,
+    "File_Name": "raa.png",
+    "File_Type": "Image",
+    "File_Path": "C:/Users/mrmac/truesight pics/raa.png",
+    "Upload_Date": "2026-05-27T08:00:46.600543",
+    "Overall_Score": 0.2758,
+    "Confidence": 1.0,
+    "Verdict": "Likely Authentic",
+    "Risk_Level": "low",
+    "Flagged": false,
+    "Threshold_Used": 0.5,
+    "Summary": "Overall analysis returned a LOW manipulation probability (28%). The content is classified as 'Likely Authentic', though results should always be corroborated with additional review.",
+    "Key_Findings": "[\"Overall analysis returned a LOW manipulation probability (28%). The content is classified as 'Likely Authentic', though results should always be corroborated with additional review.\", \"[Error Level Analysis] Error level analysis found moderate compression anomalies across regions of the image, which may indicate partial manipulation.\", \"[Face / Image Deepfake CNN] The ViT deepfake classifier found no significant manipulation artifacts in the analysed image or face region.\", \"[Frequency Analysis] Frequency domain analysis found a natural spectral distribution with no significant synthetic artifacts.\"]",
+    "Generated_Date": "2026-05-27T08:00:46.600557",
+    "module_results": [
+      {
+        "Module_Name": "Error Level Analysis",
+        "Probability_Score": 0.5642,
+        "Confidence": 0.7059,
+        "Discrepancy_Detected": "Suspicious",
+        "Details_JSON": "{\"mean_error\": 10.65, \"max_error\": 105.0, \"std_error\": 11.22, \"coefficient_of_variation\": 1.0537, \"ela_quality_used\": 90}"
+      },
+      {
+        "Module_Name": "Frequency Analysis",
+        "Probability_Score": 0.1126,
+        "Confidence": 0.65,
+        "Discrepancy_Detected": "Likely Authentic",
+        "Details_JSON": "{\"high_freq_ratio\": 0.8457, \"dct_ac_variance\": 11.17, \"hf_score\": 0.2048, \"ac_score\": 0.0}"
+      },
+      {
+        "Module_Name": "Face / Image Deepfake CNN",
+        "Probability_Score": 0.2343,
+        "Confidence": 0.92,
+        "Discrepancy_Detected": "Likely Authentic",
+        "Details_JSON": "{\"faces_detected\": 0, \"model\": \"ViT-base-patch16-224 (Deep-Fake-Detector-v2)\", \"full_image_scored\": true}"
+      }
+    ]
+  },
+  {
+    "Report_ID": 8,
+    "File_Name": "fakeviddj.mp4",
+    "File_Type": "Video",
+    "File_Path": "C:/Users/mrmac/truesight pics/fakeviddj.mp4",
+    "Upload_Date": "2026-05-27T08:03:19.966188",
+    "Overall_Score": 0.2983,
+    "Confidence": 1.0,
+    "Verdict": "Likely Authentic",
+    "Risk_Level": "low",
+    "Flagged": false,
+    "Threshold_Used": 0.5,
+    "Summary": "Overall analysis returned a LOW manipulation probability (30%). The content is classified as 'Likely Authentic', though results should always be corroborated with additional review.",
+    "Key_Findings": "[\"Overall analysis returned a LOW manipulation probability (30%). The content is classified as 'Likely Authentic', though results should always be corroborated with additional review.\", \"[Temporal Consistency] Temporal analysis detected moderate inter-frame inconsistencies that suggest possible manipulation in isolated segments of the video.\", \"[Face / Image Deepfake CNN] The ViT deepfake classifier found no significant manipulation artifacts in the analysed image or face region.\", \"[Frequency Analysis] Frequency domain analysis found a natural spectral distribution with no significant synthetic artifacts.\"]",
+    "Generated_Date": "2026-05-27T08:03:19.966223",
+    "module_results": [
+      {
+        "Module_Name": "Frequency Analysis",
+        "Probability_Score": 0.1165,
+        "Confidence": 0.65,
+        "Discrepancy_Detected": "Likely Authentic",
+        "Details_JSON": "{\"frames_sampled\": 21, \"score_std\": 0.0133, \"min_frame_score\": 0.0979, \"max_frame_score\": 0.1366}"
+      },
+      {
+        "Module_Name": "Face / Image Deepfake CNN",
+        "Probability_Score": 0.2891,
+        "Confidence": 0.9,
+        "Discrepancy_Detected": "Likely Authentic",
+        "Details_JSON": "{\"frames_scored\": 31, \"score_std\": 0.2359, \"max_frame_score\": 0.8475, \"model\": \"ViT-base-patch16-224 (Deep-Fake-Detector-v2)\"}"
+      },
+      {
+        "Module_Name": "Temporal Consistency",
+        "Probability_Score": 0.3625,
+        "Confidence": 0.9,
+        "Discrepancy_Detected": "Suspicious",
+        "Details_JSON": "{\"frames_analysed\": 120, \"frame_diff_cv\": 0.8433, \"flow_spike_ratio\": 0.042, \"mean_frame_diff\": 7.7889, \"fps\": 60.0}"
+      },
+      {
+        "Module_Name": "Lip-Sync Analysis",
+        "Probability_Score": 0.0,
+        "Confidence": 0.0,
+        "Discrepancy_Detected": "module 'mediapipe' has no attribute 'solutions'",
+        "Details_JSON": null
+      },
+      {
+        "Module_Name": "Audio Deepfake Detector (Wav2Vec2)",
+        "Probability_Score": 0.0,
+        "Confidence": 0.1,
+        "Discrepancy_Detected": "Likely Authentic",
+        "Details_JSON": "{\"note\": \"Audio too short or unreadable.\"}"
+      }
+    ]
+  },
+  {
+    "Report_ID": 9,
+    "File_Name": "5ada3bce-cbe7-41a1-9244-9873829094d0.mp4",
+    "File_Type": "Video",
+    "File_Path": "C:/Users/mrmac/Downloads/5ada3bce-cbe7-41a1-9244-9873829094d0.mp4",
+    "Upload_Date": "2026-05-27T08:03:48.818111",
+    "Overall_Score": 0.5079,
+    "Confidence": 1.0,
+    "Verdict": "Suspicious",
+    "Risk_Level": "medium",
+    "Flagged": true,
+    "Threshold_Used": 0.5,
+    "Summary": "Overall analysis returned a MODERATE manipulation probability (51%). The content is classified as 'Suspicious' and warrants further investigation before use as evidence.",
+    "Key_Findings": "[\"Overall analysis returned a MODERATE manipulation probability (51%). The content is classified as 'Suspicious' and warrants further investigation before use as evidence.\", \"[Face / Image Deepfake CNN] The ViT deepfake classifier detected moderate anomalies partially consistent with deepfake generation.\", \"[Temporal Consistency] Temporal analysis detected moderate inter-frame inconsistencies that suggest possible manipulation in isolated segments of the video.\", \"[Frequency Analysis] Frequency domain analysis found a natural spectral distribution with no significant synthetic artifacts.\", \"\\u2691  This file exceeds the configured detection sensitivity threshold and is formally flagged for review. All findings above are documented as anomaly evidence for investigative purposes.\"]",
+    "Generated_Date": "2026-05-27T08:03:48.818128",
+    "module_results": [
+      {
+        "Module_Name": "Frequency Analysis",
+        "Probability_Score": 0.1034,
+        "Confidence": 0.65,
+        "Discrepancy_Detected": "Likely Authentic",
+        "Details_JSON": "{\"frames_sampled\": 21, \"score_std\": 0.0041, \"min_frame_score\": 0.0962, \"max_frame_score\": 0.1109}"
+      },
+      {
+        "Module_Name": "Face / Image Deepfake CNN",
+        "Probability_Score": 0.5886,
+        "Confidence": 0.9,
+        "Discrepancy_Detected": "Suspicious",
+        "Details_JSON": "{\"frames_scored\": 33, \"score_std\": 0.1615, \"max_frame_score\": 0.8488, \"model\": \"ViT-base-patch16-224 (Deep-Fake-Detector-v2)\"}"
+      },
+      {
+        "Module_Name": "Temporal Consistency",
+        "Probability_Score": 0.4771,
+        "Confidence": 0.9,
+        "Discrepancy_Detected": "Suspicious",
+        "Details_JSON": "{\"frames_analysed\": 120, \"frame_diff_cv\": 1.1046, \"flow_spike_ratio\": 0.0588, \"mean_frame_diff\": 10.9722, \"fps\": 30.0}"
+      },
+      {
+        "Module_Name": "Lip-Sync Analysis",
+        "Probability_Score": 0.0,
+        "Confidence": 0.0,
+        "Discrepancy_Detected": "module 'mediapipe' has no attribute 'solutions'",
+        "Details_JSON": null
+      },
+      {
+        "Module_Name": "Audio Deepfake Detector (Wav2Vec2)",
+        "Probability_Score": 0.0,
+        "Confidence": 0.1,
+        "Discrepancy_Detected": "Likely Authentic",
+        "Details_JSON": "{\"note\": \"Audio too short or unreadable.\"}"
+      }
+    ]
   }
 ]

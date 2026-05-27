@@ -354,6 +354,14 @@ QProgressBar#barHigh::chunk  { background-color: #e74c3c; border-radius: 2px; }
 #findingSummaryLow    { font-size: 11px; font-weight: 600; color: #2ecc71; line-height: 1.5; }
 #findingText          { font-size: 11px; color: #7aa8cc; line-height: 1.5; }
 
+/* ── Analysis view ────────────────────────────────────────── */
+#analysisFileLabel {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4d7a9a;
+    letter-spacing: 0.08em;
+}
+
 /* ── Back button ──────────────────────────────────────────── */
 #backBtn {
     background-color: transparent;
