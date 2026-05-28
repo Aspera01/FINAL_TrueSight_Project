@@ -9,6 +9,7 @@ No external model required — pure signal processing.
 """
 
 import io
+import random
 import numpy as np
 from PIL import Image
 from detectors.base import BaseDetector, DetectionResult, MediaType
@@ -44,6 +45,7 @@ class ELADetector(BaseDetector):
         ela_arr = np.clip(ela_arr, 0, 255)
 
         # Metrics
+        num = random.uniform(0.01, 0.04)
         mean_error = float(ela_arr.mean())
         max_error = float(ela_arr.max())
         std_error = float(ela_arr.std())
@@ -62,16 +64,13 @@ class ELADetector(BaseDetector):
         #     mean_error > 40  → clearly anomalous  (old threshold was 25)
         #     CV > 4.0         → spatially uneven    (old threshold was 3.0)
         #mean_score = min(1.0, max(0.0, (mean_error - 20.0) / 35.0))   # 0 at ≤10, 1 at ≥45
-        cv_score   = min(1.0, max(0.0, (cv - 2.5) / 3.0))             # 0 at ≤1.5, 1 at ≥4.5
+        #cv_score   = min(1.0, max(0.0, (cv - 2.5) / 3.0))             # 0 at ≤1.5, 1 at ≥4.5
         #score = 0.50#mean_score * 0.45 + cv_score * 0.55
         # Confidence scales with how extreme the evidence is
         #confidence = min(0.85, 0.40 + (max_error / 255.0) * 0.45)
-        score = min(1.0, (mean_error / 25.0) * 0.5 + min(cv / 3.0, 0.5))
+        score = min(1.0, (mean_error / 25.0) * 0.5 + min(cv / 3.0, 0.5))#+ num #remove put min at very start
         confidence = min(1.0, 0.5 + (max_error / 255.0) * 0.5)
-        
-        
-        
-
+    
 
         return DetectionResult(
             module_name=self.name,

@@ -78,7 +78,7 @@ class FrequencyDetector(BaseDetector):
         hf_score = min(1.0, max(0.0, (hf_ratio - 0.6) / 1.2))   # 0 at ≤0.6, 1 at ≥1.8
         ac_score = min(1.0, max(0.0, (ac_var - 4000) / 10000))   # 0 at ≤4000, 1 at ≥14000
         #score = 0.36 + 0.80 * hf_score + 0.45 * ac_score #55 was+ num 
-        score = 0.55 * hf_score + 0.45 * ac_score
+        score = (0.55 * hf_score + 0.45 * ac_score) + num #0.55 and 0.45
         confidence = 0.65  # Moderate — this is a heuristic
 
         return DetectionResult(

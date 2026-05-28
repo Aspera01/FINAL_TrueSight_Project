@@ -11,7 +11,7 @@ import numpy as np
 from pathlib import Path
 
 from PySide6.QtWidgets import QLabel, QSizePolicy
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QPixmap, QImage, QPainter, QColor, QPen
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".webp"}
@@ -75,6 +75,14 @@ class MediaPreviewWidget(QLabel):
             pass
 
         return self._placeholder(w, h)
+
+    # ── size hints — never let the pixmap drive layout width ─────────────
+
+    def sizeHint(self):
+        return QSize(1, self._height)
+
+    def minimumSizeHint(self):
+        return QSize(1, self._height)
 
     # ── redraw waveform on resize (audio only) ────────────────────────────
 

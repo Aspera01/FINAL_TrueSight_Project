@@ -220,7 +220,7 @@ def aggregate(
     else:
         overall_score = weighted_score / total_weight
         # Use the same confidence-weighted denominator so result stays in [0,1].
-        # The previous expression used a plain-weight sum which didn't match
+        # The previous expression used a plain-weighpython main.pyt sum which didn't match
         # total_weight, causing occasional > 1.0 outputs.
         overall_confidence = weighted_confidence / total_weight
 

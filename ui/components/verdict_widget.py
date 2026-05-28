@@ -21,6 +21,7 @@ class VerdictWidget(QFrame):
 
         self.panel_label = QLabel("OVERALL VERDICT")
         self.panel_label.setObjectName("panelLabel")
+        self.panel_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.panel_label)
 
         # "DEEPFAKE PROBABILITY" label sits above the number

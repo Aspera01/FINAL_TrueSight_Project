@@ -98,6 +98,10 @@ class LipSyncDetector(BaseDetector):
             min_detection_confidence=0.5,
         )
 
+        # I still cant get the audio detection to work on the video. 
+        # It's always error="mediapipe not installed. Run: pip install mediapipe" 
+        # on lipsyncing and 0% on Wav2Vec2. 
+
         apertures = []
         frame_idx = 0
         while cap.isOpened() and len(apertures) < max_frames:
