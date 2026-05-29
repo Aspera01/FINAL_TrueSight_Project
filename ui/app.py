@@ -14,7 +14,7 @@ Changes in this revision
 - History rows are clickable and restore a previous result in the results view.
 """
 
-import os
+import time
 from pathlib import Path
 
 from PySide6.QtWidgets import (
@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (
     QScrollArea, QFrame, QStackedWidget,
     QProgressBar, QMessageBox, QSplitter,
 )
-from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtCore import Qt, QThread, QTimer, Signal
 from PySide6.QtGui import QDragEnterEvent, QDropEvent
 
 from core.pipeline import run_pipeline, detect_media_type
@@ -74,6 +74,8 @@ class MainWindow(QMainWindow):
         self._last_result: AggregatedResult | None = None
         self._db = Database()
         self._analysis_preview: AnalysisPreviewWidget | None = None
+        self._analysis_start: float = 0.0
+        self._pending_done: tuple | None = None
 
         self._build_ui()
         self.setAcceptDrops(True)
@@ -368,6 +370,7 @@ class MainWindow(QMainWindow):
         self._analysis_file_label.setText(
             f"ANALYZING  ·  {Path(self._current_file).name}"
         )
+        self._analysis_start = time.time()
         self._start_analysis_preview(self._current_file)
         self._left_stack.setCurrentIndex(2)
         self._settings_card.setVisible(False)
@@ -384,13 +387,30 @@ class MainWindow(QMainWindow):
         self.progress_label.setText(f"Running: {module_name}  ({current}/{total})")
 
     def _on_analysis_done(self, media_type, results):
+        from detectors.base import MediaType as MT
+        self._pending_done = (media_type, results)
+
+        if media_type in (MT.IMAGE, MT.AUDIO):
+            # Image and audio analysis can finish near-instantly; hold the results
+            # long enough for the animation to be meaningful before cutting to results.
+            elapsed_ms = int((time.time() - self._analysis_start) * 1000)
+            delay = max(0, 2500 - elapsed_ms)
+            QTimer.singleShot(delay, self._flush_pending_done)
+        else:
+            self._flush_pending_done()
+
+    def _flush_pending_done(self):
+        if self._pending_done is None:
+            return
+        media_type, results = self._pending_done
+        self._pending_done = None
+
         self._stop_analysis_preview()
         self.start_btn.setEnabled(True)
 
         aggregated = aggregate(results, media_type, self._threshold)
         self._last_result = aggregated
 
-        # Save to local database
         try:
             file_name = Path(self._current_file).name
             file_type = media_type.value.capitalize()
@@ -413,6 +433,7 @@ class MainWindow(QMainWindow):
             self.results_layout.insertWidget(self.results_layout.count() - 1, card)
 
     def _on_analysis_error(self, error_msg: str):
+        self._pending_done = None
         self._stop_analysis_preview()
         self.start_btn.setEnabled(True)
         self._left_stack.setCurrentIndex(0)

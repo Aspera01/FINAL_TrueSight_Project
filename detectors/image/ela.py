@@ -68,7 +68,7 @@ class ELADetector(BaseDetector):
         #score = 0.50#mean_score * 0.45 + cv_score * 0.55
         # Confidence scales with how extreme the evidence is
         #confidence = min(0.85, 0.40 + (max_error / 255.0) * 0.45)
-        score = min(1.0, (mean_error / 25.0) * 0.5 + min(cv / 3.0, 0.5))#+ num #remove put min at very start
+        score = min(1.0, (mean_error / 25.0) * 0.5 + min(cv / 3.0, 0.5))- num #remove put min at very start
         confidence = min(1.0, 0.5 + (max_error / 255.0) * 0.5)
     
 

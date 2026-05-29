@@ -60,7 +60,7 @@ class FaceCNNDetector(BaseDetector):
             import onnxruntime as ort
             opts = ort.SessionOptions()
             opts.log_severity_level = 3
-            providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+            providers = ["CUDAExecutionProvider", "DmlExecutionProvider", "CPUExecutionProvider"]
             self._session = ort.InferenceSession(
                 str(MODEL_PATH), sess_options=opts, providers=providers
             )

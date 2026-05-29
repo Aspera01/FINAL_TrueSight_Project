@@ -11,6 +11,9 @@ Falls back to heuristic-only analysis if model not downloaded.
 Requires: librosa
 """
 
+import os
+import tempfile
+import subprocess
 import numpy as np
 from pathlib import Path
 from detectors.base import BaseDetector, DetectionResult, MediaType
@@ -20,6 +23,8 @@ MODEL_PATH  = MODELS_DIR / "audio_deepfake_wav2vec2.onnx"
 
 SAMPLE_RATE   = 16000   # Wav2Vec2 expects 16 kHz mono
 MAX_DURATION  = 30.0    # seconds
+
+VIDEO_EXTS = {".mp4", ".avi", ".mov", ".mkv", ".wmv", ".webm"}
 
 
 class AudioSpectrogramDetector(BaseDetector):
@@ -47,7 +52,7 @@ class AudioSpectrogramDetector(BaseDetector):
             import onnxruntime as ort
             opts = ort.SessionOptions()
             opts.log_severity_level = 3
-            providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+            providers = ["CUDAExecutionProvider", "DmlExecutionProvider", "CPUExecutionProvider"]
             self._session = ort.InferenceSession(
                 str(MODEL_PATH), sess_options=opts, providers=providers
             )
@@ -57,15 +62,67 @@ class AudioSpectrogramDetector(BaseDetector):
 
     # ── audio loading ─────────────────────────────────────
 
+    def _extract_audio_from_video(self, video_path: str) -> str | None:
+        """Extract audio track from a video to a temp WAV. Returns path or None."""
+        tmp = tempfile.NamedTemporaryFile(suffix="_wav2vec2.wav", delete=False).name
+        try:
+            # Try subprocess ffmpeg (works on any system with ffmpeg on PATH)
+            result = subprocess.run(
+                ["ffmpeg", "-i", video_path, "-vn",
+                 "-acodec", "pcm_s16le", "-ar", str(SAMPLE_RATE), "-ac", "1",
+                 "-t", str(MAX_DURATION), "-y", tmp],
+                capture_output=True, timeout=60,
+            )
+            if result.returncode == 0 and os.path.exists(tmp) and os.path.getsize(tmp) > 0:
+                return tmp
+        except Exception:
+            pass
+
+        # Fallback: ffmpeg-python wrapper
+        try:
+            import ffmpeg
+            (
+                ffmpeg.input(video_path)
+                .output(tmp, acodec="pcm_s16le", ac=1, ar=SAMPLE_RATE, t=MAX_DURATION)
+                .overwrite_output()
+                .run(quiet=True)
+            )
+            if os.path.exists(tmp) and os.path.getsize(tmp) > 0:
+                return tmp
+        except Exception:
+            pass
+
+        if os.path.exists(tmp):
+            os.remove(tmp)
+        return None
+
     def _load_audio(self, path: str) -> np.ndarray | None:
         if not self._librosa_available:
             return None
+
+        import librosa
+
+        is_video = Path(path).suffix.lower() in VIDEO_EXTS
+        tmp = None
+
         try:
-            import librosa
-            y, _ = librosa.load(path, sr=SAMPLE_RATE, mono=True, duration=MAX_DURATION)
+            if is_video:
+                # librosa can't decode video containers directly — extract first
+                tmp = self._extract_audio_from_video(path)
+                if tmp is None:
+                    return None
+                load_path = tmp
+            else:
+                load_path = path
+
+            y, _ = librosa.load(load_path, sr=SAMPLE_RATE, mono=True, duration=MAX_DURATION)
             return y.astype(np.float32)
+
         except Exception:
             return None
+        finally:
+            if tmp and os.path.exists(tmp):
+                os.remove(tmp)
 
     # ── model inference ───────────────────────────────────
 
